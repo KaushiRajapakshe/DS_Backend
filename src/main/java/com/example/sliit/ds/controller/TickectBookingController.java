@@ -1,60 +1,71 @@
 package com.example.sliit.ds.controller;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.sliit.ds.config.Config;
 import com.example.sliit.ds.entities.Ticket;
-import com.example.sliit.ds.service.TicketBookingService;
+import com.example.sliit.ds.repository.TicketRepository;
 
 @RestController
+@RequestMapping(value = "/api")
+@CrossOrigin(origins = Config.allowedOrigin)
 public class TickectBookingController {
 
 	@Autowired
-	private TicketBookingService ticketService;
+	private TicketRepository ticketRepository;
+
+	// Retrieve operation
+	@RequestMapping(method=RequestMethod.GET, value="/tickets")
+    public Iterable<Ticket> ticket() {
+        return ticketRepository.findAll();
+    }
 	
-	@RequestMapping("/create")
-	public String create(@RequestParam Integer ticketId, @RequestParam String passengerName, @RequestParam Date bookingDate, @RequestParam String sourceStation, 
-			@RequestParam String destStation, @RequestParam String email){
-		Ticket t = ticketService.create(ticketId, passengerName, bookingDate, sourceStation, destStation, email);
-		return t.toString();
-	}
-	
-	@RequestMapping("/get")
-	public Ticket getTicket(@RequestParam Integer ticketId){
-		return ticketService.getByTicketId(ticketId);
-	}
-	
-	@RequestMapping("/getAll")
-	public List<Ticket> getAll(){
-		return ticketService.getAll();
-	}
-	
-	@RequestMapping("/getPassenger")
-	public List<Ticket> getPassenger(@RequestParam String passengerName){
-		return ticketService.getByPassengerName(passengerName);
-	}
-	
-	@RequestMapping("/update")
-	public String update(@RequestParam Integer ticketId, @RequestParam String passengerName, @RequestParam Date bookingDate, @RequestParam String sourceStation, 
-			@RequestParam String destStation, @RequestParam String email){
-		Ticket t = ticketService.update(ticketId, passengerName, bookingDate, sourceStation, destStation, email);
-		return t.toString();
-	}
-	
-	@RequestMapping("/delete")
-	public String delete(@RequestParam Integer ticketId){
-		ticketService.delete(ticketId);
-		return "Deleted "+ticketId;
-	}
-	
-	@RequestMapping("/deleteAll")
-	public String deleteAll(){
-		ticketService.deleteAll();
-		return "Deleted All Records.";
-	}
+	// Create operation
+    @RequestMapping(method=RequestMethod.POST, value="/tickets")
+    public Ticket save(@RequestBody Ticket ticket) {
+    	ticketRepository.save(ticket);
+
+        return ticket;
+    }
+
+    @RequestMapping(method=RequestMethod.GET, value="/tickets/{id}")
+    public Ticket show(@PathVariable String id) {
+        return ticketRepository.findByTicketId(id);
+    }
+
+    // Update operation
+    @RequestMapping(method=RequestMethod.PUT, value="/tickets/{id}")
+    public Ticket update(@PathVariable String id, @RequestBody Ticket ticket) {
+       Ticket optticket = ticketRepository.findByTicketId(id);
+        Ticket t = optticket;
+        if(ticket.getPassengerName() != null)
+            t.setPassengerName(ticket.getPassengerName());
+        if(ticket.getBookingDate() != null)
+            t.setBookingDate(ticket.getBookingDate());
+        if(ticket.getSourceStation() != null)
+            t.setSourceStation(ticket.getSourceStation());
+        if(ticket.getDestStation() != null)
+            t.setDestStation(ticket.getDestStation());
+        if(ticket.getEmail() != null)
+            t.setEmail(ticket.getEmail());
+        ticketRepository.save(t);
+        return t;
+    }
+
+    // Delete operation
+    @RequestMapping(method=RequestMethod.DELETE, value="/tickets/{id}")
+    public String delete(@PathVariable String id) {
+        //Ticket optticket = ticketRepository.findByTicketId(id);
+        //ticketRepository.delete(optticket);
+
+        return "";
+    }
 }

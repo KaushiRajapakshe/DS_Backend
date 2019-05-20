@@ -3,7 +3,7 @@ package com.example.sliit.ds.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "users")
+@Document(collection = "user")
 public class User {
 
 	@Id
@@ -11,12 +11,27 @@ public class User {
 	private String name;
 	private String email;
 	private String password;
+	private String cpasswrd;
 	
-	public User(String name, String email, String password){
-		this.name = name;
-		this.email = email;
-		this.password = password;
+	public String getCpasswrd() {
+		return cpasswrd;
 	}
+
+	public void setCpasswrd(String cpasswrd) {
+		this.cpasswrd = cpasswrd;
+	}
+
+	public String getNic() {
+		return nic;
+	}
+
+	public void setNic(String nic) {
+		this.nic = nic;
+	}
+
+	private String nic;
+	
+	public User(){}
 
 	public String getId() {
 		return id;

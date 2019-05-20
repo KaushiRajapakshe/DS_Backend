@@ -9,26 +9,28 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Ticket {
 
 	@Id
-	private Integer ticketId;
+	private String ticketId;
 	private String passengerName;
 	private Date bookingDate;
 	private String sourceStation;
 	private String destStation;
 	private String email;
+	private double price;
 	
-	public Ticket(int ticketId2, String passengerName2, Date bookingDate2, String sourceStation2, String destStation2,
-			String email2) {
-		this.ticketId = ticketId2;
-		this.passengerName = passengerName2;
-		this.bookingDate = bookingDate2;
-		this.sourceStation = sourceStation2;
-		this.destStation = destStation2;
-		this.email = email2;
+	public Ticket() {}
+	
+	public double getPrice() {
+		return price;
 	}
-	public Integer getTicketId() {
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public String getTicketId() {
 		return ticketId;
 	}
-	public void setTicketId(Integer ticketId) {
+	public void setTicketId(String ticketId) {
 		this.ticketId = ticketId;
 	}
 	public String getPassengerName() {
@@ -60,6 +62,10 @@ public class Ticket {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public double getPriceOf(String ticketId){
+		return price;
 	}
 	@Override
 	public String toString(){
